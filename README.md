@@ -14,3 +14,5 @@ A browser version of FlappyBird built with the basic trinity of web development,
   - [ ] Add the progressive player's score on screen based on the player's current run;
 - [ ] The game offers the player the possibility of restarting if a collision happens;
   - [ ] Implement the reset behaviour;
+- [ ] The game's difficulty automatically progresses based on the player's current score;
+  - [ ] Implement a simple difficulty progress mechanism; 
