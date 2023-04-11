@@ -39,31 +39,49 @@ class Barrier {
 }
 
 class BarriersPair {
-  constructor({ gapsize }) {
+  constructor({ gapsize, xPosition }) {
     this.gapsize = gapsize;
+
     this.element = new GeneralDomElement({
       HTMLTagType: "div",
       HTMLElementClass: "barriers-pair",
     });
-    document.querySelector("[wm-flappy]").appendChild(this.element);
 
-    this.barriersPairHeight = this.element.clientHeight;
+    this.setXPosition(xPosition);
+
+    document.querySelector("[wm-flappy]").appendChild(this.element);
 
     this.topBarrier = new Barrier({ reversed: true });
     this.bottomBarrier = new Barrier({ reversed: false });
 
-    this.#randomizePairHeight();
+    this.randomizePairHeight();
     this.#buildBarriersPair();
   }
 
-  #randomizePairHeight() {
+  setXPosition(x) {
+    this.element.style.left = `${x}px`;
+  }
+
+  getXPosition() {
+    return this.element.style.left.split("px")[0];
+  }
+
+  getWidth() {
+    return this.element.clientWidth;
+  }
+
+  getHeight() {
+    return this.element.clientHeight;
+  }
+
+  randomizePairHeight() {
     const randomHeightFactor = Math.random();
 
     const topBarrierHeight =
-      randomHeightFactor * (this.barriersPairHeight - this.gapsize);
+      randomHeightFactor * (this.getHeight() - this.gapsize);
 
     const bottomBarrierHeight =
-      this.barriersPairHeight - this.gapsize - topBarrierHeight;
+      this.getHeight() - this.gapsize - topBarrierHeight;
 
     this.topBarrier.setHeight(topBarrierHeight);
     this.bottomBarrier.setHeight(bottomBarrierHeight);
@@ -75,6 +93,20 @@ class BarriersPair {
   }
 }
 
-new BarriersPair({
+const xMovementFactor = 10;
+const rerenderInterval = 20;
+const barriersPair = new BarriersPair({
   gapsize: 150,
+  xPosition: document.body.clientWidth,
 });
+
+setInterval(() => {
+  const isOutOfScreen = barriersPair.getXPosition() < -barriersPair.getWidth();
+  barriersPair.setXPosition(barriersPair.getXPosition() - xMovementFactor);
+  console.log(isOutOfScreen);
+
+  if (isOutOfScreen) {
+    barriersPair.setXPosition(document.body.clientWidth);
+    barriersPair.randomizePairHeight();
+  }
+}, rerenderInterval);
