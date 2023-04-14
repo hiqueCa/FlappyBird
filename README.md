@@ -6,7 +6,7 @@ A browser version of FlappyBird built with the basic trinity of web development,
 ## User Stories and its Subtasks (in constant update)
 - [ ] Elements on screen can move (bird, barriers and so on...);
   - [x] A single pair of barriers can move horizontally on the screen;
-  - [ ] Multiple pairs of barriers can move horizontally on the screen;
+  - [x] Multiple pairs of barriers can move horizontally on the screen;
   - [ ] The bird can move vertically on the screen responding to the player's keyboard action;
 - [ ] The bird can collide with the barriers;
   - [ ] Implement the collision behaviour between barriers and bird, which should stop the game;
