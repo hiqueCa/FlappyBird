@@ -95,6 +95,27 @@ class BarriersPair {
   }
 }
 
+class Bird {
+  constructor() {
+    this.element = new GeneralDomElement({
+      HTMLTagType: "img",
+      HTMLElementClass: "bird",
+    });
+
+    this.element.src = "./imgs/passaro.png";
+
+    document.querySelector("[wm-flappy]").appendChild(this.element);
+  }
+
+  get yPosition() {
+    return this.element.style.top.split("px")[0];
+  }
+
+  set yPosition(y) {
+    this.element.style.top = `${y}px`;
+  }
+}
+
 const xMovementFactor = 10;
 const distanceBetweenBarrierPairs = 400;
 const rerenderInterval = 20;
@@ -117,6 +138,8 @@ const barriersPairs = [
     xPosition: document.body.clientWidth + 3 * distanceBetweenBarrierPairs,
   }),
 ];
+
+const bird = new Bird();
 
 setInterval(() => {
   barriersPairs.forEach((barrierPair) => {
