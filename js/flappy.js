@@ -58,6 +58,10 @@ class BarriersPair {
     this.#buildBarriersPair();
   }
 
+  get isOutOfScreen() {
+    return this.getXPosition() < -this.getWidth();
+  }
+
   setXPosition(x) {
     this.element.style.left = `${x}px`;
   }
@@ -94,19 +98,35 @@ class BarriersPair {
 }
 
 const xMovementFactor = 10;
+const distanceBetweenBarrierPairs = 400;
 const rerenderInterval = 20;
-const barriersPair = new BarriersPair({
-  gapsize: 150,
-  xPosition: document.body.clientWidth,
-});
+
+const barriersPairs = [
+  new BarriersPair({
+    gapsize: 150,
+    xPosition: document.body.clientWidth,
+  }),
+  new BarriersPair({
+    gapsize: 150,
+    xPosition: document.body.clientWidth + distanceBetweenBarrierPairs,
+  }),
+  new BarriersPair({
+    gapsize: 150,
+    xPosition: document.body.clientWidth + 2 * distanceBetweenBarrierPairs,
+  }),
+  new BarriersPair({
+    gapsize: 150,
+    xPosition: document.body.clientWidth + 3 * distanceBetweenBarrierPairs,
+  }),
+];
 
 setInterval(() => {
-  const isOutOfScreen = barriersPair.getXPosition() < -barriersPair.getWidth();
-  barriersPair.setXPosition(barriersPair.getXPosition() - xMovementFactor);
-  console.log(isOutOfScreen);
+  barriersPairs.forEach((barrierPair) => {
+    if (barrierPair.isOutOfScreen) {
+      barrierPair.setXPosition(document.body.clientWidth);
+      barrierPair.randomizePairHeight();
+    }
 
-  if (isOutOfScreen) {
-    barriersPair.setXPosition(document.body.clientWidth);
-    barriersPair.randomizePairHeight();
-  }
+    barrierPair.setXPosition(barrierPair.getXPosition() - xMovementFactor);
+  });
 }, rerenderInterval);
