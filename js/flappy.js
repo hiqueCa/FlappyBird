@@ -47,7 +47,7 @@ class BarriersPair {
       HTMLElementClass: "barriers-pair",
     });
 
-    this.setXPosition(xPosition);
+    this.xPosition = xPosition;
 
     document.querySelector("[wm-flappy]").appendChild(this.element);
 
@@ -59,33 +59,31 @@ class BarriersPair {
   }
 
   get isOutOfScreen() {
-    return this.getXPosition() < -this.getWidth();
+    return this.xPosition < -this.width;
   }
 
-  setXPosition(x) {
+  set xPosition(x) {
     this.element.style.left = `${x}px`;
   }
 
-  getXPosition() {
+  get xPosition() {
     return this.element.style.left.split("px")[0];
   }
 
-  getWidth() {
+  get width() {
     return this.element.clientWidth;
   }
 
-  getHeight() {
+  get height() {
     return this.element.clientHeight;
   }
 
   randomizePairHeight() {
     const randomHeightFactor = Math.random();
 
-    const topBarrierHeight =
-      randomHeightFactor * (this.getHeight() - this.gapsize);
+    const topBarrierHeight = randomHeightFactor * (this.height - this.gapsize);
 
-    const bottomBarrierHeight =
-      this.getHeight() - this.gapsize - topBarrierHeight;
+    const bottomBarrierHeight = this.height - this.gapsize - topBarrierHeight;
 
     this.topBarrier.setHeight(topBarrierHeight);
     this.bottomBarrier.setHeight(bottomBarrierHeight);
@@ -123,10 +121,10 @@ const barriersPairs = [
 setInterval(() => {
   barriersPairs.forEach((barrierPair) => {
     if (barrierPair.isOutOfScreen) {
-      barrierPair.setXPosition(document.body.clientWidth);
+      barrierPair.xPosition = document.body.clientWidth;
       barrierPair.randomizePairHeight();
     }
 
-    barrierPair.setXPosition(barrierPair.getXPosition() - xMovementFactor);
+    barrierPair.xPosition = barrierPair.xPosition - xMovementFactor;
   });
 }, rerenderInterval);
