@@ -58,6 +58,8 @@ class BarriersPair {
     this.#buildBarriersPair();
   }
 
+  static xMovementFactor = 10;
+
   get isOutOfScreen() {
     return this.xPosition < -this.width;
   }
@@ -89,6 +91,16 @@ class BarriersPair {
     this.bottomBarrier.setHeight(bottomBarrierHeight);
   }
 
+  moveHorizontally() {
+    if (this.isOutOfScreen) {
+      this.xPosition = document.body.clientWidth;
+      this.randomizePairHeight();
+    } else {
+      console.log(this.xPosition);
+      this.xPosition = this.xPosition - BarriersPair.xMovementFactor;
+    }
+  }
+
   #buildBarriersPair() {
     this.element.appendChild(this.topBarrier.element);
     this.element.appendChild(this.bottomBarrier.element);
@@ -102,21 +114,46 @@ class Bird {
       HTMLElementClass: "bird",
     });
 
+    this.flying = false;
+
     this.element.src = "./imgs/passaro.png";
+
+    this.yPosition = document.querySelector("[wm-flappy]").clientHeight / 2;
 
     document.querySelector("[wm-flappy]").appendChild(this.element);
   }
 
   get yPosition() {
-    return this.element.style.top.split("px")[0];
+    return parseInt(this.element.style.top.split("px")[0]);
   }
 
   set yPosition(y) {
     this.element.style.top = `${y}px`;
   }
+
+  fly() {
+    window.onkeydown = () => {
+      this.flying = true;
+    };
+    window.onkeyup = () => {
+      this.flying = false;
+    };
+
+    const newYPosition = this.yPosition + (this.flying ? -5 : 5);
+    const minFlyHeight =
+      document.querySelector("[wm-flappy]").clientHeight -
+      this.element.clientHeight;
+
+    if (newYPosition < 0) {
+      this.yPosition = 0;
+    } else if (newYPosition > minFlyHeight) {
+      this.yPosition = minFlyHeight;
+    } else {
+      this.yPosition = newYPosition;
+    }
+  }
 }
 
-const xMovementFactor = 10;
 const distanceBetweenBarrierPairs = 400;
 const rerenderInterval = 20;
 
@@ -142,12 +179,6 @@ const barriersPairs = [
 const bird = new Bird();
 
 setInterval(() => {
-  barriersPairs.forEach((barrierPair) => {
-    if (barrierPair.isOutOfScreen) {
-      barrierPair.xPosition = document.body.clientWidth;
-      barrierPair.randomizePairHeight();
-    }
-
-    barrierPair.xPosition = barrierPair.xPosition - xMovementFactor;
-  });
+  bird.fly();
+  barriersPairs.forEach((barrierPair) => barrierPair.moveHorizontally());
 }, rerenderInterval);
