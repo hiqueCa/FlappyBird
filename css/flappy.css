@@ -21,7 +21,6 @@
   position: absolute;
   width: var(--img-width);
   left: calc(50% - var(--img-width) / 2);
-  top: 50%;
 }
 
 .barriers-pair{
