@@ -41,6 +41,7 @@ class Barrier {
 class BarriersPair {
   constructor({ gapsize, xPosition }) {
     this.gapsize = gapsize;
+    this.scored = false;
 
     this.element = new GeneralDomElement({
       HTMLTagType: "div",
@@ -59,6 +60,16 @@ class BarriersPair {
   }
 
   static xMovementFactor = 10;
+
+  get crossedMidScreen() {
+    return (
+      this.xPosition <= document.querySelector("[wm-flappy]").clientWidth / 2
+    );
+  }
+
+  get validForScoring() {
+    return this.crossedMidScreen && !this.scored;
+  }
 
   get isOutOfScreen() {
     return this.xPosition < -this.width;
@@ -95,8 +106,8 @@ class BarriersPair {
     if (this.isOutOfScreen) {
       this.xPosition = document.body.clientWidth;
       this.randomizePairHeight();
+      this.scored = false;
     } else {
-      console.log(this.xPosition);
       this.xPosition = this.xPosition - BarriersPair.xMovementFactor;
     }
   }
@@ -154,6 +165,26 @@ class Bird {
   }
 }
 
+class GameScore {
+  constructor() {
+    this.element = document.querySelector("div.progress-status");
+    this.score = 0;
+    this.#updateScoreOnScreen();
+  }
+
+  manageScore(barrierPair) {
+    if (barrierPair.validForScoring) {
+      this.score += 1;
+      barrierPair.scored = true;
+      this.#updateScoreOnScreen();
+    }
+  }
+
+  #updateScoreOnScreen() {
+    this.element.textContent = this.score;
+  }
+}
+
 const distanceBetweenBarrierPairs = 400;
 const rerenderInterval = 20;
 
@@ -177,8 +208,12 @@ const barriersPairs = [
 ];
 
 const bird = new Bird();
+const gameScore = new GameScore();
 
 setInterval(() => {
   bird.fly();
-  barriersPairs.forEach((barrierPair) => barrierPair.moveHorizontally());
+  barriersPairs.forEach((barrierPair) => {
+    gameScore.manageScore(barrierPair);
+    barrierPair.moveHorizontally();
+  });
 }, rerenderInterval);
