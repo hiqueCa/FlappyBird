@@ -10,8 +10,10 @@ A browser version of FlappyBird built with the basic trinity of web development,
   - [x] The bird can move vertically on the screen responding to the player's keyboard action;
 - [ ] The bird can collide with the barriers;
   - [ ] Implement the collision behaviour between barriers and bird, which should stop the game;
-- [ ] The game keeps track of the player's score;
-  - [ ] Add the progressive player's score on screen based on the player's current run;
+- [x] The game keeps track of the player's score;
+  - [x] Add the progressive player's score on screen based on the player's current run;
+
+### Bonus points:
 - [ ] The game offers the player the possibility of restarting if a collision happens;
   - [ ] Implement the reset behaviour;
 - [ ] The game's difficulty automatically progresses based on the player's current score;
