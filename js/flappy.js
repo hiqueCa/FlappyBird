@@ -1,28 +1,48 @@
 class GeneralDomElement {
   constructor({ HTMLTagType, HTMLElementClass }) {
-    const element = document.createElement(HTMLTagType);
-    element.className = HTMLElementClass;
+    this.HTMLTagType = HTMLTagType;
+    this.HTMLElementClass = HTMLElementClass;
+  }
+
+  build() {
+    const element = document.createElement(this.HTMLTagType);
+    element.className = this.HTMLElementClass;
+
+    return element;
+  };
+
+  fetch() {
+    const element = document.querySelector(
+      `${this.HTMLElementClass}`,
+    ) || document.querySelector(
+      `${this.HTMLTagType}.${this.HTMLElementClass}`,
+    );
 
     return element;
   }
 }
+
+const gameArea = new GeneralDomElement({
+  HTMLElementClass: "[wm-flappy]",
+  HTMLTagType: "div",
+}).fetch();
 
 class Barrier {
   constructor({ reversed = false }) {
     this.element = new GeneralDomElement({
       HTMLTagType: "div",
       HTMLElementClass: "barrier",
-    });
+    }).build();
 
     this.barrierTop = new GeneralDomElement({
       HTMLTagType: "div",
       HTMLElementClass: "top",
-    });
+    }).build();
 
     this.barrierBody = new GeneralDomElement({
       HTMLTagType: "div",
       HTMLElementClass: "body",
-    });
+    }).build();
 
     this.#buildBarrier(reversed);
   }
@@ -46,11 +66,11 @@ class BarriersPair {
     this.element = new GeneralDomElement({
       HTMLTagType: "div",
       HTMLElementClass: "barriers-pair",
-    });
+    }).build();
 
     this.xPosition = xPosition;
 
-    document.querySelector("[wm-flappy]").appendChild(this.element);
+    gameArea.appendChild(this.element);
 
     this.topBarrier = new Barrier({ reversed: true });
     this.bottomBarrier = new Barrier({ reversed: false });
@@ -62,9 +82,7 @@ class BarriersPair {
   static xMovementFactor = 10;
 
   get crossedMidScreen() {
-    return (
-      this.xPosition <= document.querySelector("[wm-flappy]").clientWidth / 2
-    );
+    return this.xPosition <= gameArea.clientWidth / 2;
   }
 
   get validForScoring() {
@@ -123,15 +141,15 @@ class Bird {
     this.element = new GeneralDomElement({
       HTMLTagType: "img",
       HTMLElementClass: "bird",
-    });
+    }).build();
 
     this.flying = false;
 
     this.element.src = "./imgs/passaro.png";
 
-    this.yPosition = document.querySelector("[wm-flappy]").clientHeight / 2;
+    this.yPosition = gameArea.clientHeight / 2;
 
-    document.querySelector("[wm-flappy]").appendChild(this.element);
+    gameArea.appendChild(this.element);
   }
 
   get yPosition() {
@@ -151,9 +169,7 @@ class Bird {
     };
 
     const newYPosition = this.yPosition + (this.flying ? -5 : 5);
-    const minFlyHeight =
-      document.querySelector("[wm-flappy]").clientHeight -
-      this.element.clientHeight;
+    const minFlyHeight = gameArea.clientHeight - this.element.clientHeight;
 
     if (newYPosition < 0) {
       this.yPosition = 0;
@@ -167,7 +183,11 @@ class Bird {
 
 class GameScore {
   constructor() {
-    this.element = document.querySelector("div.progress-status");
+    this.element = new GeneralDomElement({
+      HTMLElementClass: "progress-status",
+      HTMLTagType: "div",
+    }).fetch();
+
     this.score = 0;
     this.#updateScoreOnScreen();
   }
