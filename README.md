@@ -1,9 +1,11 @@
 # FlappyBird
 
 ## Motivation
+
 A browser version of FlappyBird built with the basic trinity of web development, HTML, CSS and JS, to flex a little bit of my basic web development habilities.
 
 ## User Stories and its Subtasks (in constant update)
+
 - [x] Elements on screen can move (bird, barriers and so on...);
   - [x] A single pair of barriers can move horizontally on the screen;
   - [x] Multiple pairs of barriers can move horizontally on the screen;
@@ -14,6 +16,7 @@ A browser version of FlappyBird built with the basic trinity of web development,
   - [x] Add the progressive player's score on screen based on the player's current run;
 
 ### Bonus points:
+
 - [ ] The game offers the player the possibility of restarting if a collision happens;
   - [ ] Implement the reset behaviour;
 - [ ] The game's difficulty automatically progresses based on the player's current score;
