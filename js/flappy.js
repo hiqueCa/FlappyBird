@@ -205,35 +205,51 @@ class GameScore {
   }
 }
 
-const distanceBetweenBarrierPairs = 400;
-const rerenderInterval = 20;
+class Game {
+  constructor() {
+    this.distanceBetweenBarrierPairs = 400;
+    this.rerenderInterval = 20;
 
-const barriersPairs = [
-  new BarriersPair({
-    gapsize: 150,
-    xPosition: document.body.clientWidth,
-  }),
-  new BarriersPair({
-    gapsize: 150,
-    xPosition: document.body.clientWidth + distanceBetweenBarrierPairs,
-  }),
-  new BarriersPair({
-    gapsize: 150,
-    xPosition: document.body.clientWidth + 2 * distanceBetweenBarrierPairs,
-  }),
-  new BarriersPair({
-    gapsize: 150,
-    xPosition: document.body.clientWidth + 3 * distanceBetweenBarrierPairs,
-  }),
-];
+    this.barriersPairs = [
+      new BarriersPair({
+        gapsize: 150,
+        xPosition: document.body.clientWidth,
+      }),
+      new BarriersPair({
+        gapsize: 150,
+        xPosition: document.body.clientWidth + this.distanceBetweenBarrierPairs,
+      }),
+      new BarriersPair({
+        gapsize: 150,
+        xPosition:
+          document.body.clientWidth + 2 * this.distanceBetweenBarrierPairs,
+      }),
+      new BarriersPair({
+        gapsize: 150,
+        xPosition:
+          document.body.clientWidth + 3 * this.distanceBetweenBarrierPairs,
+      }),
+    ];
 
-const bird = new Bird();
-const gameScore = new GameScore();
+    this.bird = new Bird();
+    this.gameScore = new GameScore();
+  }
 
-setInterval(() => {
-  bird.fly();
-  barriersPairs.forEach((barrierPair) => {
-    gameScore.manageScore(barrierPair);
-    barrierPair.moveHorizontally();
-  });
-}, rerenderInterval);
+  play() {
+    this.interval = setInterval(() => {
+      this.bird.fly();
+      this.barriersPairs.forEach((barrierPair) => {
+        this.gameScore.manageScore(barrierPair);
+        barrierPair.moveHorizontally();
+      });
+    }, this.rerenderInterval);
+  }
+
+  stop() {
+    clearInterval(this.interval);
+  }
+}
+
+const game = new Game();
+
+game.play();
