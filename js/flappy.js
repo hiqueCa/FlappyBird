@@ -29,6 +29,8 @@ const gameArea = new GeneralDomElement({
 
 class Barrier {
   constructor({ reversed = false }) {
+    this.collided = false;
+
     this.element = new GeneralDomElement({
       HTMLTagType: "div",
       HTMLElementClass: "barrier",
@@ -51,6 +53,21 @@ class Barrier {
     this.barrierBody.style.height = `${height}px`;
   }
 
+  checkCollision({ bird }) {
+    const horizontalSuperposition =
+      bird.DOMRect.right >= this.element.getBoundingClientRect().left &&
+      bird.DOMRect.right <= this.element.getBoundingClientRect().right;
+    const verticalSuperposition =
+      bird.DOMRect.bottom >= this.element.getBoundingClientRect().top &&
+      bird.DOMRect.bottom <= this.element.getBoundingClientRect().bottom;
+
+    if (!this.collided) {
+      this.collided = horizontalSuperposition && verticalSuperposition;
+    }
+
+    return this.collided;
+  }
+
   #buildBarrier(reversed) {
     this.element.appendChild(reversed ? this.barrierBody : this.barrierTop);
 
@@ -62,6 +79,7 @@ class BarriersPair {
   constructor({ gapsize, xPosition }) {
     this.gapsize = gapsize;
     this.scored = false;
+    this.collided = false;
 
     this.element = new GeneralDomElement({
       HTMLTagType: "div",
@@ -150,6 +168,8 @@ class Bird {
     this.yPosition = gameArea.clientHeight / 2;
 
     gameArea.appendChild(this.element);
+
+    this.DOMRect = this.element.getBoundingClientRect();
   }
 
   get yPosition() {
@@ -208,24 +228,24 @@ class GameScore {
 class Game {
   constructor() {
     this.distanceBetweenBarrierPairs = 400;
-    this.rerenderInterval = 20;
+    this.rerenderInterval = 40;
 
     this.barriersPairs = [
       new BarriersPair({
-        gapsize: 150,
+        gapsize: 200,
         xPosition: document.body.clientWidth,
       }),
       new BarriersPair({
-        gapsize: 150,
+        gapsize: 200,
         xPosition: document.body.clientWidth + this.distanceBetweenBarrierPairs,
       }),
       new BarriersPair({
-        gapsize: 150,
+        gapsize: 200,
         xPosition:
           document.body.clientWidth + 2 * this.distanceBetweenBarrierPairs,
       }),
       new BarriersPair({
-        gapsize: 150,
+        gapsize: 200,
         xPosition:
           document.body.clientWidth + 3 * this.distanceBetweenBarrierPairs,
       }),
@@ -239,13 +259,19 @@ class Game {
     this.interval = setInterval(() => {
       this.bird.fly();
       this.barriersPairs.forEach((barrierPair) => {
-        this.gameScore.manageScore(barrierPair);
         barrierPair.moveHorizontally();
+        if (
+          barrierPair.bottomBarrier.checkCollision({ bird: this.bird }) ||
+          barrierPair.topBarrier.checkCollision({ bird: this.bird })
+        ) {
+          this.#stop();
+        }
+        this.gameScore.manageScore(barrierPair);
       });
     }, this.rerenderInterval);
   }
 
-  stop() {
+  #stop() {
     clearInterval(this.interval);
   }
 }
