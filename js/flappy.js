@@ -55,11 +55,15 @@ class Barrier {
 
   checkCollision({ bird }) {
     const horizontalSuperposition =
-      bird.DOMRect.right >= this.element.getBoundingClientRect().left &&
-      bird.DOMRect.right <= this.element.getBoundingClientRect().right;
+      bird.element.getBoundingClientRect().right >=
+        this.element.getBoundingClientRect().left &&
+      this.element.getBoundingClientRect().right >=
+        bird.element.getBoundingClientRect().left;
     const verticalSuperposition =
-      bird.DOMRect.bottom >= this.element.getBoundingClientRect().top &&
-      bird.DOMRect.bottom <= this.element.getBoundingClientRect().bottom;
+      bird.element.getBoundingClientRect().bottom >=
+        this.element.getBoundingClientRect().top &&
+      this.element.getBoundingClientRect().bottom >=
+        bird.element.getBoundingClientRect().top;
 
     if (!this.collided) {
       this.collided = horizontalSuperposition && verticalSuperposition;
@@ -168,8 +172,6 @@ class Bird {
     this.yPosition = gameArea.clientHeight / 2;
 
     gameArea.appendChild(this.element);
-
-    this.DOMRect = this.element.getBoundingClientRect();
   }
 
   get yPosition() {
@@ -264,6 +266,11 @@ class Game {
           barrierPair.bottomBarrier.checkCollision({ bird: this.bird }) ||
           barrierPair.topBarrier.checkCollision({ bird: this.bird })
         ) {
+          console.log(barrierPair.topBarrier.element.getBoundingClientRect());
+          console.log(
+            barrierPair.bottomBarrier.element.getBoundingClientRect()
+          );
+          console.log(this.bird.DOMRect);
           this.#stop();
         }
         this.gameScore.manageScore(barrierPair);
