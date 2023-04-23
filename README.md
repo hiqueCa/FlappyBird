@@ -10,8 +10,8 @@ A browser version of FlappyBird built with the basic trinity of web development,
   - [x] A single pair of barriers can move horizontally on the screen;
   - [x] Multiple pairs of barriers can move horizontally on the screen;
   - [x] The bird can move vertically on the screen responding to the player's keyboard action;
-- [ ] The bird can collide with the barriers;
-  - [ ] Implement the collision behaviour between barriers and bird, which should stop the game;
+- [x] The bird can collide with the barriers;
+  - [x] Implement the collision behaviour between barriers and bird, which should stop the game;
 - [x] The game keeps track of the player's score;
   - [x] Add the progressive player's score on screen based on the player's current run;
 
